@@ -2,8 +2,8 @@ import numpy as np
 import sys
 import warnings
 warnings.filterwarnings("error")
-sys.path.append('cqToolbox')
-sys.path.append('../cqToolbox')
+sys.path.append('cq-core')
+sys.path.append('../cq-core')
 from linearcq import Conv_Operator
 from cqtoolbox import CQModel
 from newtonStepper import NewtonIntegrator
@@ -26,7 +26,7 @@ for j in range(Am):
     print(rhs)
     ex_sol = 4*(rk.get_time_points(T))**3
     sol2 = td2_op.apply_RKconvol(rhs[1:],T,method = rk.method_name,factor_laplace_evaluations = 2,show_progress=False)
-    sol2 = np.concatenate(([[0]],sol2),axis = 1)
+    sol2 = np.concatenate(([[0]],[sol2]),axis = 1)
     #print("exsol: ",ex_sol)
     #print("exsol: ",ex_sol[m::m])
     #print(np.real(sol2[0,::]))
