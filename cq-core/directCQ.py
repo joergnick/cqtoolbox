@@ -46,7 +46,7 @@ def laplace_evals(s):
     return s**(-2)
 cq = DirectCQ(laplace_evals)
 T = 1
-Am = 1
+Am = 4
 errs = np.zeros(Am)
 Ns = np.zeros(Am)
 for j in range(Am):

@@ -59,13 +59,17 @@ class RKMethod():
 
     def reverse_diagonalize(self,b_dof_x_m):
         return np.matmul(b_dof_x_m,self.Tdiag.T)
-    def get_time_points(self,T):
+    def get_time_points(self,T,initial_point=True):
         N  = int(np.round(T/self.tau))
         ts = np.zeros(self.m*N+1)
         for j in range(N):
             for k in range(self.m):
                 ts[j*self.m+k+1] = (j+self.c[k])
-        return self.tau*ts
+        if initial_point:
+            return self.tau*ts
+        else:
+            return self.tau*ts[1:]
+
 class Extrapolator():
     "Provides functionality with regards to extrapolation."
     prolonged = 0
@@ -123,7 +127,7 @@ class Extrapolator():
         interpolation_times = np.append(interpolation_times,3*rk.tau+rk.tau*rk.c)
         interpolation_times = np.append(interpolation_times,4*rk.tau+rk.tau*rk.c)
         interpolation_times = np.append(interpolation_times,5*rk.tau+rk.tau*rk.c)
-       # interpolation_times = interpolation_times[:min(len(interpolation_times),len(u[0,:]))]
+        interpolation_times = interpolation_times[:min(len(interpolation_times),len(u[0,:]))]
         clamp_vals = self.clamp_evals(additional_times,speed=decay_speed)
         from scipy import interpolate
 
@@ -139,31 +143,3 @@ class Extrapolator():
         ret= u[:,:len(u[0,:])-self.prolonged]
         self.prolonged = 0
         return ret
-#
-#extr = Extrapolator()
-#N = 10
-#T=0.5#
-#tau = T*1.0/N
-#rk =RKMethod("RadauIIA-3",tau)
-#import numpy as np
-#print(1-rk.b.dot(np.linalg.inv(rk.A).dot(np.ones((3)))))
-#u = np.zeros((2,N*rk.m+1))
-#timepoints = rk.get_time_points(T)
-#u[0,:] = timepoints**2
-#u[1,:] = timepoints**3
-#prolonge_by = 10
-#print(timepoints)
-#print(u[0,:])
-#timepoints = rk.get_time_points(T+tau*prolonge_by)
-#print(timepoints)
-#print(u[0,:])
-#u = extr.prolonge_towards_0(u,prolonge_by,rk,decay_speed = 8)
-#print(u[0,:])
-##import matplotlib.pyplot as plt
-#plt.plot(timepoints,u[0,:])
-#plt.plot(timepoints,u[1,:])
-#
-#plt.plot(timepoints,timepoints**2,linestyle='dashed')
-#plt.plot(timepoints,timepoints**3,linestyle='dashed')
-##plt.plot(vals)
-#plt.show()
