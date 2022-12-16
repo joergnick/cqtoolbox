@@ -1,6 +1,6 @@
 import sys
-sys.path.append('..')
-
+sys.path.append('cq-core')
+sys.path.append('../cq-core')
 import numpy as np
 import math
 from linearcq import Conv_Operator
